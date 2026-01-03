@@ -1,0 +1,175 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit {{ taxi.plaque }} - WalDrive{% endblock %}
+
+{% block body %}
+<div class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-4">
+                    <a href="{{ path('home') }}" class="text-gray-500 hover:text-dark transition-colors">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                    <a href="{{ path('home') }}" class="flex items-center gap-1">
+                        <span class="logo-w">W</span>
+                        <span class="text-xl font-bold text-dark">al<span class="text-primary">Drive</span></span>
+                    </a>
+                </div>
+                <span class="text-sm font-medium text-gray-500">
+                    <i class="fas fa-pen text-primary mr-1"></i>Editing {{ taxi.plaque }}
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main class="flex-1 max-w-2xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Breadcrumb -->
+        <nav class="mb-6 text-sm" data-aos="fade-down">
+            <ol class="flex items-center gap-2 text-gray-500">
+                <li><a href="{{ path('home') }}" class="hover:text-primary"><i class="fas fa-home"></i></a></li>
+                <li><i class="fas fa-chevron-right text-xs"></i></li>
+                <li><a href="{{ path('home') }}" class="hover:text-primary">Taxis</a></li>
+                <li><i class="fas fa-chevron-right text-xs"></i></li>
+                <li><a href="{{ path('taxi_show', {'id': taxi.id}) }}" class="hover:text-primary">{{ taxi.plaque }}</a></li>
+                <li><i class="fas fa-chevron-right text-xs"></i></li>
+                <li class="text-dark font-medium">Edit</li>
+            </ol>
+        </nav>
+
+        <!-- Title -->
+        <div class="mb-6" data-aos="fade-up">
+            <h1 class="text-2xl font-bold text-dark flex items-center gap-3">
+                <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                    <i class="fas fa-pen text-white"></i>
+                </div>
+                Edit Taxi
+            </h1>
+            <p class="text-gray-500 mt-1">Update details for <strong class="text-primary">{{ taxi.plaque }}</strong></p>
+        </div>
+
+        <!-- Form -->
+        <div class="card overflow-hidden" data-aos="fade-up" data-aos-delay="50">
+            <div class="bg-dark px-5 py-3 flex justify-between items-center">
+                <span class="text-white font-medium text-sm">
+                    <i class="fas fa-taxi text-primary mr-2"></i>Taxi Information
+                </span>
+                <span class="text-gray-400 text-xs">ID: #{{ taxi.id }}</span>
+            </div>
+            
+            <form method="post" action="{{ path('taxi_update', {'id': taxi.id}) }}" class="p-6" id="taxiForm">
+                <input type="hidden" name="_method" value="PUT">
+                
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-medium text-dark mb-2">
+                            Plate Number <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" name="plaque" value="{{ taxi.plaque }}" required class="w-full px-4 py-3 input-field">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-dark mb-2">
+                            Driver Name <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" name="chauffeur" value="{{ taxi.chauffeur }}" required class="w-full px-4 py-3 input-field">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-sm font-medium text-dark mb-2">
+                                Date of Circulation <span class="text-red-500">*</span>
+                            </label>
+                            <input type="date" name="date_mise_circulation" value="{{ taxi.dateMiseCirculation|date('Y-m-d') }}" required class="w-full px-4 py-3 input-field">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-dark mb-2">
+                                Zone <span class="text-gray-400 text-xs">(Optional)</span>
+                            </label>
+                            <input type="text" name="zone" value="{{ taxi.zone }}" class="w-full px-4 py-3 input-field" placeholder="North District">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-dark mb-3">
+                            Availability <span class="text-red-500">*</span>
+                        </label>
+                        <div class="flex gap-4">
+                            <label class="flex-1 cursor-pointer">
+                                <input type="radio" name="disponible" value="1" {% if taxi.disponible == 1 %}checked{% endif %} class="sr-only peer">
+                                <div class="p-4 bg-gray-50 rounded-lg border-2 border-transparent peer-checked:border-green-500 peer-checked:bg-green-50 transition-all text-center">
+                                    <i class="fas fa-check-circle text-green-500 text-xl mb-2"></i>
+                                    <p class="font-medium text-dark">Available</p>
+                                </div>
+                            </label>
+                            <label class="flex-1 cursor-pointer">
+                                <input type="radio" name="disponible" value="0" {% if taxi.disponible == 0 %}checked{% endif %} class="sr-only peer">
+                                <div class="p-4 bg-gray-50 rounded-lg border-2 border-transparent peer-checked:border-orange-500 peer-checked:bg-orange-50 transition-all text-center">
+                                    <i class="fas fa-clock text-orange-500 text-xl mb-2"></i>
+                                    <p class="font-medium text-dark">Busy</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 mt-8 pt-6 border-t border-gray-200">
+                    <button type="submit" id="submitBtn" class="btn-primary flex-1 py-3 rounded-lg flex items-center justify-center gap-2 font-medium">
+                        <i class="fas fa-save"></i>Update Taxi
+                    </button>
+                    <a href="{{ path('taxi_show', {'id': taxi.id}) }}" class="btn-outline flex-1 py-3 rounded-lg flex items-center justify-center gap-2 font-medium">
+                        <i class="fas fa-times"></i>Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="card overflow-hidden mt-6 border-2 border-red-200" data-aos="fade-up" data-aos-delay="100">
+            <div class="bg-red-50 px-5 py-3">
+                <span class="text-red-700 font-medium text-sm">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>Danger Zone
+                </span>
+            </div>
+            <div class="p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div>
+                    <p class="font-medium text-dark">Delete this taxi</p>
+                    <p class="text-sm text-gray-500">This cannot be undone.</p>
+                </div>
+                <button onclick="openDeleteModal('{{ path('taxi_delete', {'id': taxi.id}) }}')" class="btn-danger px-5 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap">
+                    <i class="fas fa-trash mr-2"></i>Delete Taxi
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-500">
+                <div class="flex items-center gap-2">
+                    <span class="logo-w text-2xl">W</span>
+                    <span>© 2026 WalDrive</span>
+                </div>
+                <div class="flex gap-6">
+                    <a href="#" class="hover:text-primary transition-colors">Privacy</a>
+                    <a href="#" class="hover:text-primary transition-colors">Terms</a>
+                    <a href="#" class="hover:text-primary transition-colors">Support</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+
+{% block javascripts %}
+<script>
+    document.getElementById('taxiForm').addEventListener('submit', function() {
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Updating...';
+    });
+</script>
+{% endblock %}
+{% endblock %}

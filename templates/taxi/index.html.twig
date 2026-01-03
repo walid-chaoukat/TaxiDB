@@ -1,0 +1,210 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}WalDrive - Dashboard{% endblock %}
+
+{% block body %}
+<div class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <a href="{{ path('home') }}" class="flex items-center gap-1">
+                    <span class="logo-w">W</span>
+                    <span class="text-xl font-bold text-dark">al<span class="text-primary">Drive</span></span>
+                </a>
+                <a href="{{ path('taxi_new') }}" class="btn-primary px-4 py-2 rounded-lg flex items-center gap-2 text-sm">
+                    <i class="fas fa-plus"></i>
+                    <span class="hidden sm:inline">Add Taxi</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Header Section -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8" data-aos="fade-up">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold text-dark flex items-center gap-3">
+                    <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                        <i class="fas fa-taxi text-white"></i>
+                    </div>
+                    Taxi Fleet
+                </h1>
+                <p class="text-gray-500 mt-1">Manage your vehicles and drivers</p>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8" data-aos="fade-up" data-aos-delay="50">
+            <div class="card p-5">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-primary rounded-xl flex items-center justify-center">
+                        <i class="fas fa-car text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold text-dark">{{ taxis|length }}</p>
+                        <p class="text-sm text-gray-500">Total</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card p-5">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-check text-green-600 text-lg"></i>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold text-dark">{{ taxis|filter(t => t.disponible == 1)|length }}</p>
+                        <p class="text-sm text-gray-500">Available</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card p-5">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-clock text-orange-600 text-lg"></i>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold text-dark">{{ taxis|filter(t => t.disponible == 0)|length }}</p>
+                        <p class="text-sm text-gray-500">Busy</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card p-5">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-map-marker-alt text-blue-600 text-lg"></i>
+                    </div>
+                    <div>
+                        {% set zones = [] %}
+                        {% for taxi in taxis %}
+                            {% if taxi.zone and taxi.zone not in zones %}
+                                {% set zones = zones|merge([taxi.zone]) %}
+                            {% endif %}
+                        {% endfor %}
+                        <p class="text-2xl font-bold text-dark">{{ zones|length }}</p>
+                        <p class="text-sm text-gray-500">Zones</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search -->
+        <div class="card p-4 mb-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="relative">
+                <i class="fas fa-search text-gray-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
+                <input type="text" id="searchInput" placeholder="Search taxis..." class="w-full pl-11 pr-4 py-3 input-field">
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="card overflow-hidden" data-aos="fade-up" data-aos-delay="150">
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-dark text-white">
+                        <th class="text-left py-4 px-5 font-semibold text-sm">Plate</th>
+                        <th class="text-left py-4 px-5 font-semibold text-sm">Driver</th>
+                        <th class="text-left py-4 px-5 font-semibold text-sm hidden md:table-cell">Year</th>
+                        <th class="text-left py-4 px-5 font-semibold text-sm hidden lg:table-cell">Zone</th>
+                        <th class="text-left py-4 px-5 font-semibold text-sm">Status</th>
+                        <th class="text-center py-4 px-5 font-semibold text-sm">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="taxiTableBody">
+                    {% if taxis is empty %}
+                        <tr>
+                            <td colspan="6" class="py-16 text-center">
+                                <div class="flex flex-col items-center">
+                                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                                        <i class="fas fa-taxi text-gray-300 text-3xl"></i>
+                                    </div>
+                                    <p class="text-gray-500 mb-4">No taxis yet</p>
+                                    <a href="{{ path('taxi_new') }}" class="btn-primary px-5 py-2 rounded-lg text-sm">
+                                        <i class="fas fa-plus mr-2"></i>Add First Taxi
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        {% for taxi in taxis %}
+                            <tr class="border-b border-gray-100 table-row transition-colors">
+                                <td class="py-4 px-5">
+                                    <a href="{{ path('taxi_show', {'id': taxi.id}) }}" class="font-semibold text-dark hover:text-primary transition-colors">
+                                        {{ taxi.plaque }}
+                                    </a>
+                                </td>
+                                <td class="py-4 px-5 text-gray-600">{{ taxi.chauffeur }}</td>
+                                <td class="py-4 px-5 text-gray-500 hidden md:table-cell">
+                                    {{ taxi.dateMiseCirculation ? taxi.dateMiseCirculation|date('Y') : '—' }}
+                                </td>
+                                <td class="py-4 px-5 hidden lg:table-cell">
+                                    {% if taxi.zone %}
+                                        <span class="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 rounded text-xs font-medium">
+                                            <i class="fas fa-map-pin text-xs"></i>{{ taxi.zone }}
+                                        </span>
+                                    {% else %}
+                                        <span class="text-gray-400">—</span>
+                                    {% endif %}
+                                </td>
+                                <td class="py-4 px-5">
+                                    {% if taxi.disponible == 1 %}
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">
+                                            <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>Available
+                                        </span>
+                                    {% else %}
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-semibold">
+                                            <span class="w-1.5 h-1.5 bg-orange-500 rounded-full"></span>Busy
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td class="py-4 px-5">
+                                    <div class="flex items-center justify-center gap-1">
+                                        <a href="{{ path('taxi_show', {'id': taxi.id}) }}" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ path('taxi_edit', {'id': taxi.id}) }}" class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors" title="Edit">
+                                            <i class="fas fa-pen"></i>
+                                        </a>
+                                        <button onclick="openDeleteModal('{{ path('taxi_delete', {'id': taxi.id}) }}')" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-500">
+                <div class="flex items-center gap-2">
+                    <span class="logo-w text-2xl">W</span>
+                    <span>© 2026 WalDrive</span>
+                </div>
+                <div class="flex gap-6">
+                    <a href="#" class="hover:text-primary transition-colors">Privacy</a>
+                    <a href="#" class="hover:text-primary transition-colors">Terms</a>
+                    <a href="#" class="hover:text-primary transition-colors">Support</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+
+{% block javascripts %}
+<script>
+    document.getElementById('searchInput').addEventListener('input', function() {
+        const term = this.value.toLowerCase();
+        const rows = document.getElementById('taxiTableBody').getElementsByTagName('tr');
+        for (let row of rows) {
+            row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %}

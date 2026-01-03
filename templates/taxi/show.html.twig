@@ -1,0 +1,152 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ taxi.plaque }} - WalDrive{% endblock %}
+
+{% block body %}
+<div class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-4">
+                    <a href="{{ path('home') }}" class="text-gray-500 hover:text-dark transition-colors">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                    <a href="{{ path('home') }}" class="flex items-center gap-1">
+                        <span class="logo-w">W</span>
+                        <span class="text-xl font-bold text-dark">al<span class="text-primary">Drive</span></span>
+                    </a>
+                </div>
+                <a href="{{ path('taxi_edit', {'id': taxi.id}) }}" class="btn-primary px-4 py-2 rounded-lg flex items-center gap-2 text-sm">
+                    <i class="fas fa-pen"></i>
+                    <span class="hidden sm:inline">Edit</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Breadcrumb -->
+        <nav class="mb-6 text-sm" data-aos="fade-down">
+            <ol class="flex items-center gap-2 text-gray-500">
+                <li><a href="{{ path('home') }}" class="hover:text-primary"><i class="fas fa-home"></i></a></li>
+                <li><i class="fas fa-chevron-right text-xs"></i></li>
+                <li><a href="{{ path('home') }}" class="hover:text-primary">Taxis</a></li>
+                <li><i class="fas fa-chevron-right text-xs"></i></li>
+                <li class="text-dark font-medium">{{ taxi.plaque }}</li>
+            </ol>
+        </nav>
+
+        <!-- Hero -->
+        <div class="card overflow-hidden mb-6" data-aos="fade-up">
+            <div class="bg-dark p-8 text-center">
+                <div class="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-taxi text-white text-2xl"></i>
+                </div>
+                <h1 class="text-3xl font-bold text-primary mb-3">{{ taxi.plaque }}</h1>
+                <div class="flex items-center justify-center gap-3 flex-wrap">
+                    {% if taxi.disponible == 1 %}
+                        <span class="px-4 py-1.5 bg-green-500 text-white rounded-full text-sm font-medium">
+                            <i class="fas fa-check mr-1"></i>Available
+                        </span>
+                    {% else %}
+                        <span class="px-4 py-1.5 bg-orange-500 text-white rounded-full text-sm font-medium">
+                            <i class="fas fa-clock mr-1"></i>Busy
+                        </span>
+                    {% endif %}
+                    {% if taxi.zone %}
+                        <span class="px-4 py-1.5 bg-white/20 text-white rounded-full text-sm">
+                            <i class="fas fa-map-marker-alt mr-1"></i>{{ taxi.zone }}
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6" data-aos="fade-up" data-aos-delay="50">
+            <div class="card p-5">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-primary rounded-xl flex items-center justify-center">
+                        <i class="fas fa-user text-white"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500 uppercase tracking-wide">Driver</p>
+                        <p class="text-lg font-semibold text-dark">{{ taxi.chauffeur }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card p-5">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-calendar text-blue-600"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500 uppercase tracking-wide">Circulation Date</p>
+                        <p class="text-lg font-semibold text-dark">
+                            {{ taxi.dateMiseCirculation ? taxi.dateMiseCirculation|date('M d, Y') : '—' }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="card p-5">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-map-marked-alt text-purple-600"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500 uppercase tracking-wide">Zone</p>
+                        <p class="text-lg font-semibold text-dark">{{ taxi.zone ?: 'Not assigned' }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card p-5">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 {% if taxi.disponible == 1 %}bg-green-100{% else %}bg-orange-100{% endif %} rounded-xl flex items-center justify-center">
+                        <i class="fas {% if taxi.disponible == 1 %}fa-check text-green-600{% else %}fa-clock text-orange-600{% endif %}"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500 uppercase tracking-wide">Status</p>
+                        <p class="text-lg font-semibold {% if taxi.disponible == 1 %}text-green-600{% else %}text-orange-600{% endif %}">
+                            {% if taxi.disponible == 1 %}Available{% else %}Busy{% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="card p-5" data-aos="fade-up" data-aos-delay="100">
+            <div class="flex flex-col sm:flex-row gap-3">
+                <a href="{{ path('taxi_edit', {'id': taxi.id}) }}" class="btn-primary flex-1 py-3 rounded-lg flex items-center justify-center gap-2 font-medium">
+                    <i class="fas fa-pen"></i>Edit Taxi
+                </a>
+                <a href="{{ path('home') }}" class="btn-outline flex-1 py-3 rounded-lg flex items-center justify-center gap-2 font-medium">
+                    <i class="fas fa-arrow-left"></i>Back
+                </a>
+                <button onclick="openDeleteModal('{{ path('taxi_delete', {'id': taxi.id}) }}')" class="btn-danger flex-1 py-3 rounded-lg flex items-center justify-center gap-2 font-medium">
+                    <i class="fas fa-trash"></i>Delete
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-500">
+                <div class="flex items-center gap-2">
+                    <span class="logo-w text-2xl">W</span>
+                    <span>© 2026 WalDrive</span>
+                </div>
+                <div class="flex gap-6">
+                    <a href="#" class="hover:text-primary transition-colors">Privacy</a>
+                    <a href="#" class="hover:text-primary transition-colors">Terms</a>
+                    <a href="#" class="hover:text-primary transition-colors">Support</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+{% endblock %}
