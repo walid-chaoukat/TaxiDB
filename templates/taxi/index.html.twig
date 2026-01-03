@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}WalDrive - Dashboard{% endblock %}
+{% block title %}DouDrive - Dashboard{% endblock %}
 
 {% block body %}
 <div class="min-h-screen flex flex-col">
@@ -9,8 +9,8 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <a href="{{ path('home') }}" class="flex items-center gap-1">
-                    <span class="logo-w">W</span>
-                    <span class="text-xl font-bold text-dark">al<span class="text-primary">Drive</span></span>
+                    <span class="logo-w">D</span>
+                    <span class="text-xl font-bold text-dark">ou<span class="text-primary">Drive</span></span>
                 </a>
                 <a href="{{ path('taxi_new') }}" class="btn-primary px-4 py-2 rounded-lg flex items-center gap-2 text-sm">
                     <i class="fas fa-plus"></i>
@@ -162,12 +162,12 @@
                                         <a href="{{ path('taxi_show', {'id': taxi.id}) }}" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="View">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <a href="{{ path('taxi_edit', {'id': taxi.id}) }}" class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors" title="Edit">
+                                        {# <a href="{{ path('taxi_edit', {'id': taxi.id}) }}" class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors" title="Edit">
                                             <i class="fas fa-pen"></i>
                                         </a>
                                         <button onclick="openDeleteModal('{{ path('taxi_delete', {'id': taxi.id}) }}')" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
                                             <i class="fas fa-trash"></i>
-                                        </button>
+                                        </button> #}
                                     </div>
                                 </td>
                             </tr>
@@ -183,8 +183,8 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-500">
                 <div class="flex items-center gap-2">
-                    <span class="logo-w text-2xl">W</span>
-                    <span>© 2026 WalDrive</span>
+                    <span class="logo-w text-2xl">D</span>
+                    <span>© 2026 DouDrive</span>
                 </div>
                 <div class="flex gap-6">
                     <a href="#" class="hover:text-primary transition-colors">Privacy</a>

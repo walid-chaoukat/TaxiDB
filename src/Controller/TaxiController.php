@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class WalidController extends AbstractController
+final class TaxiController extends AbstractController
 {
     #[Route('/', name: 'home')]
     public function index(TaxiRepository $taxi): Response
@@ -48,13 +48,16 @@ final class WalidController extends AbstractController
         return $this->redirectToRoute('home');
     }
 
+
     #[Route('/taxi/{id}', name: 'taxi_show', methods: ['GET'], requirements: ['id' => '\d+'])]
-    public function show(Taxi $taxi): Response
+    public function show(TaxiRepository $taxi, $id): Response
     {
+        $taxi = $taxi->find($id);
         return $this->render('taxi/show.html.twig', [
             'taxi' => $taxi,
         ]);
     }
+
 
     #[Route('/taxi/{id}/edit', name: 'taxi_edit', requirements: ['id' => '\d+'])]
     public function edit(Taxi $taxi): Response
