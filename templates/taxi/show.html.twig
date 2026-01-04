@@ -119,15 +119,15 @@
         <!-- Actions -->
         <div class="card p-5" data-aos="fade-up" data-aos-delay="100">
             <div class="flex flex-col sm:flex-row gap-3">
-                {# <a href="{{ path('taxi_edit', {'id': taxi.id}) }}" class="btn-primary flex-1 py-3 rounded-lg flex items-center justify-center gap-2 font-medium">
+                <a href="{{ path('taxi_edit', {'id': taxi.id}) }}" class="btn-primary flex-1 py-3 rounded-lg flex items-center justify-center gap-2 font-medium">
                     <i class="fas fa-pen"></i>Edit Taxi
-                </a> #}
+                </a>
                 <a href="{{ path('home') }}" class="btn-outline flex-1 py-3 rounded-lg flex items-center justify-center gap-2 font-medium">
                     <i class="fas fa-arrow-left"></i>Back
                 </a>
-                {# <button onclick="openDeleteModal('{{ path('taxi_delete', {'id': taxi.id}) }}')" class="btn-danger flex-1 py-3 rounded-lg flex items-center justify-center gap-2 font-medium">
+                <button onclick="openDeleteModal('{{ path('taxi_delete', {'id': taxi.id}) }}')" class="btn-danger flex-1 py-3 rounded-lg flex items-center justify-center gap-2 font-medium">
                     <i class="fas fa-trash"></i>Delete
-                </button> #}
+                </button>
             </div>
         </div>
     </main>

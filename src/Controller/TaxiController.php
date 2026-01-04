@@ -11,8 +11,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class TaxiController extends AbstractController
-{
+final class TaxiController extends AbstractController   
+{ 
+      
+
     #[Route('/', name: 'home')]
     public function index(TaxiRepository $taxi): Response
     {
@@ -30,6 +32,7 @@ final class TaxiController extends AbstractController
     public function create(Request $request, EntityManagerInterface $entityManager): Response
     {
         $taxi = new Taxi();
+
         $taxi->setPlaque($request->request->get('plaque'));
         $taxi->setChauffeur($request->request->get('chauffeur'));
         $taxi->setZone($request->request->get('zone'));
@@ -41,7 +44,7 @@ final class TaxiController extends AbstractController
             $taxi->setDateMiseCirculation($date);
         }
 
-        $entityManager->persist($taxi);
+        $entityManager->persist($taxi); 
         $entityManager->flush();
 
         $this->addFlash('success', 'Taxi created successfully!');
@@ -57,7 +60,6 @@ final class TaxiController extends AbstractController
             'taxi' => $taxi,
         ]);
     }
-
 
     #[Route('/taxi/{id}/edit', name: 'taxi_edit', requirements: ['id' => '\d+'])]
     public function edit(Taxi $taxi): Response
@@ -90,7 +92,7 @@ final class TaxiController extends AbstractController
     #[Route('/taxi/{id}/delete', name: 'taxi_delete', methods: ['POST'])]
     public function delete(Taxi $taxi, EntityManagerInterface $entityManager): Response
     {
-        $entityManager->remove($taxi);
+        $entityManager->remove($taxi); 
         $entityManager->flush();
 
         $this->addFlash('success', 'Taxi deleted successfully!');
